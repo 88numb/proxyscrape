@@ -1,3 +1,4 @@
+import os
 import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
@@ -37,8 +38,11 @@ def scrape_proxies(url):
     return proxies
 
 # Function to save proxies to a text file
-def save_proxies(proxies, filename):
-    with open(filename, "w") as file:
+def save_proxies(proxies, output_dir, filename):
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+    filepath = os.path.join(output_dir, filename)
+    with open(filepath, "w") as file:
         file.write("\n".join(proxies))
 
 # Main program
@@ -49,10 +53,13 @@ for url in urls:
 
 # Format date and time
 now = datetime.now()
-timestamp = now.strftime("%Y%m%d/%H:%M")
+timestamp = now.strftime("%Y%m%d_%H%M")
+
+# Output directory to save the proxy list
+output_dir = "output"
 
 # File name to save the proxy list
 output_file = f"proxies_{timestamp}.txt"
 
-save_proxies(all_proxies, output_file)
-print("The list of working proxies has been saved in", output_file)
+save_proxies(all_proxies, output_dir, output_file)
+print("The list of working proxies has been saved in", os.path.join(output_dir, output_file))
